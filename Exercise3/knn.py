@@ -1,20 +1,15 @@
 import numpy as np
 import pandas as pd
-from math import sqrt
-import matplotlib.pyplot as plt
 import warnings
-from matplotlib import style
 from collections import Counter
-style.use('fivethirtyeight')
-import matplotlib.cm as cm
 
 def get_class_data():
     #format of data
     #dataset = {'0':[[1,2],[2,3],[3,1]], '1':[[6,5],[7,7],[8,6]]}
     #new_features = [5,7]
 
-    df = pd.read_csv('./dataset/knn_classification.csv', sep=',')
-    df2 = df.drop([123])  #drop row 124th row
+    df = pd.read_csv('./dataset/knn_classification.csv', sep=',') #original dataset
+    df2 = df.drop([123])  #drop 124th row from test sample
 
     classes = df2.y.unique()
 
@@ -22,21 +17,17 @@ def get_class_data():
     for i, row in df2.iterrows():
         c = row['y']
         dataset[c].append(list(row[:-1]))
-
-    #for i in dataset:
-    #   for ii in dataset[i]:
-    #    plt.scatter(ii[0],ii[1], s=100,color=cm.hot(i*100))
-    #plt.show()
-
     return df, dataset
 
 def get_reg_data():
-    df = pd.read_csv('./dataset/knn_regression.csv', sep=',')
-    df2 = df.drop([123])
+
+    df = pd.read_csv('./dataset/knn_regression.csv', sep=',') #original dataset
+    df2 = df.drop([123]) #drop 124th row from test sample
     dataset = np.array(df2)
     return df, dataset
 
 def knn_class(data, predict, k=3):
+
     if len(data) >= k:
         warnings.warn('K is set to a value less than total voting groups!')
     distances = []
@@ -51,9 +42,8 @@ def knn_class(data, predict, k=3):
     vote_result = Counter(neighbors).most_common(1)[0][0]
     return vote_result, neighbors
 
-def knn_reg(data,predict, k=2):
-    #if len(data) >= k:
-    #    warnings.warn('K is set to a value less than total voting groups!')
+def knn_reg(data,predict, k=3):
+
     distances = []
     for row in data:
         features = row[:-1]
@@ -65,7 +55,6 @@ def knn_reg(data,predict, k=2):
     neighbors = [i[1] for i in sorted(distances)[:k]]
     result = np.round(np.array(neighbors).mean(),2)
     return result, neighbors
-
 
 ### Run Code ###
 
